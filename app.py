@@ -30,8 +30,8 @@ def main():
         return transcript
 
     # Function to summarize text
-    def summarize_transcript(transcript, lang):
-        summary = summarize_text(transcript, lang=lang)
+    def summarize_transcript(transcript, lang, title):
+        summary = summarize_text(transcript, lang=lang, title=title)
         return summary
 
     # Interface components
@@ -58,7 +58,7 @@ def main():
             
             # Display Summary
             transcript = get_transcript_from_url(url)
-            summary = summarize_transcript(transcript, language)
+            summary = summarize_transcript(transcript, language, title)
             st.subheader("Video Summary:")
             st.write(summary)
         else:
