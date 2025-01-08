@@ -1,38 +1,36 @@
 import os
-from openai import OpenAI
+import anthropic
 
 def summarize_text(text, lang='en'):
-    OpenAI.api_key = os.getenv("OPENAI_API_KEY")
+    # Claude API 키 환경 변수에서 가져오기
+    client = anthropic.Client(api_key=os.getenv("ANTHROPIC_API_KEY"))
     
-    client = OpenAI(
-        api_key =OpenAI.api_key,
+    # 프롬프트 구성
+    prompt = f"""
+    The following text is in its original language. Provide the output in this language: {lang}.
+    
+    Format the output as follows:
+    Summary:
+    short summary of the text
+    
+    Key Takeaways:
+    succinct bullet point list of key takeaways
+    
+    input text: {text}
+    """
+    
+    # Claude API 호출
+    response = client.messages.create(
+        model="claude-3-5-haiku-20241022",
+        max_tokens=1000,
+        messages=[{
+            "role": "user",
+            "content": prompt
+        }]
     )
     
-    prompt = f"""
-            The following text is in its original language. Provide the output in this lanuage: {lang}. 
-            Format the output as follows:
-
-            Summary:
-            short summary of the video
-
-            Key Takeaways:
-            succinct bullet point list of key takeaways
-
-            input text: {text}
-            """
-    
-    response = client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
-        model="gpt-3.5-turbo",
-        #model="gpt-4-turbo", # better performance, slower inference
-        )
-    
-    summary_text = response.to_dict()['choices'][0]['message']['content']
+    # 응답에서 텍스트 추출
+    summary_text = response.content[0].text
     return summary_text
 
 if __name__ == "__main__":

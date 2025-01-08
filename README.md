@@ -35,7 +35,8 @@ Simple application to generate transcript summaries from YouTube Videos
 After installing requirements.txt, paste and export your OpenAI API key
 
 ```bash
-   export OPENAI_API_KEY="your-api-key-here"
+   # export OPENAI_API_KEY="your-api-key-here"
+   export ANTHROPIC_API_KEY='your-anthropic-api-key-here'
    ```
 
 then, run the following command to start the app 
