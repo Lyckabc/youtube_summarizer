@@ -42,8 +42,10 @@ After installing requirements.txt, paste and export your OpenAI API key
 then, run the following command to start the app 
 
 ```bash
-   streamlit run app.py
-   ```
+python3 -m venv path/to/venv
+source path/to/venv/bin/activate
+streamlit run app.py
+```
 
 Paste a YouTube link to summarize its content (must have a transcript available)
 
