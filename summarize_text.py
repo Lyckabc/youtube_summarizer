@@ -1,6 +1,8 @@
 import os
 import anthropic
 import re
+import openai
+import google.generativeai as genai
 
 def clean_and_split_title(title):
     """
@@ -20,9 +22,16 @@ def clean_and_split_title(title):
     
     return topics
 
-def summarize_text(text, lang='en', title=None):
+def summarize_text(text, lang='en', title=None, api_choice='Anthropic'):
     # Claude API 키 환경 변수에서 가져오기
-    client = anthropic.Client(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    if api_choice == 'Anthropic':
+        client = anthropic.Client(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    elif api_choice == 'OpenAI':
+        client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    elif api_choice == 'Gemini':
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    else:
+        raise ValueError(f"Invalid API choice: {api_choice}")
 
     # Title parsing instruction
     title_instruction = ""
@@ -67,18 +76,39 @@ def summarize_text(text, lang='en', title=None):
 
 
     
-    # Claude API 호출
-    response = client.messages.create(
-        model="claude-3-5-haiku-20241022",
-        max_tokens=8192,
+    # if Anthropic API
+    if api_choice == 'Anthropic':
+        response = client.messages.create(
+            model="claude-3-5-haiku-20241022",
+            max_tokens=8000,
         messages=[{
             "role": "user",
             "content": prompt
         }]
     )
     
+    # if OpenAI API
+    elif api_choice == 'OpenAI':
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{
+                "role": "user",
+                "content": prompt
+            }]
+        )
+    
+    # if Gemini API
+    elif api_choice == 'Gemini':
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        messages = [
+            {'role':'user',
+             'parts': prompt}
+        ]
+        response = model.generate_content(messages)
+        # print(response.text)
+    
     # 응답에서 텍스트 추출
-    summary_text = response.content[0].text
+    summary_text = response.text
     print(summary_text)
     return summary_text
 

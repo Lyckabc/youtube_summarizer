@@ -30,8 +30,8 @@ def main():
         return transcript
 
     # Function to summarize text
-    def summarize_transcript(transcript, lang, title):
-        summary = summarize_text(transcript, lang=lang, title=title)
+    def summarize_transcript(transcript, lang, title, api_choice):
+        summary = summarize_text(transcript, lang=lang, title=title, api_choice=api_choice)
         return summary
 
     # Interface components
@@ -41,6 +41,9 @@ def main():
 
     # Language selection
     language = st.radio("Select language to output:", ('English', 'Spanish', 'Korean'))
+
+    # AI API Selection
+    api_choice = st.radio("Select AI API:", ('Anthropic', 'OpenAI', 'Gemini'))
 
     if st.button("Summarize"):
         if url:
@@ -58,7 +61,7 @@ def main():
             
             # Display Summary
             transcript = get_transcript_from_url(url)
-            summary = summarize_transcript(transcript, language, title)
+            summary = summarize_transcript(transcript, language, title, api_choice)
             st.subheader("Video Summary:")
             st.write(summary)
         else:
