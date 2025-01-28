@@ -39,41 +39,33 @@ def summarize_text(text, lang='en', title=None):
     The following text is in its original language. Provide the output in this language: {lang}.
     
     {title_instruction}
-    First, provide a concise overview summary of the entire text for each topic.
-    Then, analyze each topic using the following format:
+    For each topic, analyze the input text and provide the output in the following structure:
 
-    For each topic:
-    1. Background Context:
+    1. Detailed Explanation:
+       - Provide a detailed and thorough explanation of the topic
+       - Include any important context or information that adds depth to the understanding
+
+    2. Background Context:
        - Explain why this topic is being discussed
        - What triggered this discussion
        - Current relevance of this topic
-    
-    2. Key Phrases and Concepts:
+
+    3. Key Phrases and Concepts:
        - List important phrases, terms, or concepts that are central to understanding this topic
        - Include relevant quotes or specific language used in the text
        - Highlight any recurring themes or patterns
 
-    Format the output exactly as follows:
-    Overall Summary:
-    [summary of the entire text for each topic]
+    4. Overall Summary:
+       - Summarize the topic in a concise, high-level overview that captures the essence of the discussion
 
-    Topic Analysis:
-    [Topic 1]:
+    Repeat the above format for each topic provided in the input.
 
-    Background Context:
-    * [Why this topic emerged]
-    * [Current significance]
-    
-    Key Phrases and Concepts:
-    * [Important phrase or concept 1]
-    * [Important phrase or concept 2]
-    
-    [Continue for each topic in the title...]
-    
-    Note: Focus on extracting meaningful connections and context for each topic while maintaining the relationship between topics where relevant.
-    
+    Note: Focus on extracting meaningful connections and context for each topic while maintaining the relationship between topics where relevant. Take ample time to thoroughly analyze the input text, ensuring a nuanced and comprehensive understanding of each topic before crafting the output. Avoid rushing the interpretation to preserve depth and accuracy.
+
     input text: {text}
     """
+
+
     
     # Claude API 호출
     response = client.messages.create(
