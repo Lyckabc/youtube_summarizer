@@ -86,6 +86,7 @@ def summarize_text(text, lang='en', title=None, api_choice='Anthropic'):
             "content": prompt
         }]
     )
+        response = response.content[0].text
     
     # if OpenAI API
     elif api_choice == 'OpenAI':
@@ -96,6 +97,7 @@ def summarize_text(text, lang='en', title=None, api_choice='Anthropic'):
                 "content": prompt
             }]
         )
+        response = response.choices[0].message.content
     
     # if Gemini API
     elif api_choice == 'Gemini':
@@ -104,11 +106,11 @@ def summarize_text(text, lang='en', title=None, api_choice='Anthropic'):
             {'role':'user',
              'parts': prompt}
         ]
-        response = model.generate_content(messages)
+        response = model.generate_content(messages).text
         # print(response.text)
     
     # 응답에서 텍스트 추출
-    summary_text = response.text
+    summary_text = response
     print(summary_text)
     return summary_text
 
