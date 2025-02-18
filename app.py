@@ -26,12 +26,17 @@ def main():
     # Function to get transcript from URL
     def get_transcript_from_url(url):
         video_id = extract_video_id(url)
-        transcript = get_transcript(video_id)
-        return transcript
+        transcript, chapters = get_transcript(video_id, url)
+        return transcript, chapters
 
     # Function to summarize text
-    def summarize_transcript(transcript, lang, title, api_choice):
-        summary = summarize_text(transcript, lang=lang, title=title, api_choice=api_choice)
+    def summarize_transcript(transcript, lang, title, chapters, api_choice, summarize_way): 
+        if summarize_way == 'Chapters':
+            summary = summarize_text(transcript, lang=lang, title=title, chapters=chapters, api_choice=api_choice, summarize_way='Chapters')
+        elif summarize_way == 'Detailed':
+            summary = summarize_text(transcript, lang=lang, title=title, chapters=chapters,api_choice=api_choice, summarize_way='detailed')
+        elif summarize_way == 'syukaworld':
+            summary = summarize_text(transcript, lang=lang, title=title, chapters=chapters, api_choice=api_choice, summarize_way='syukaworld')
         return summary
 
     # Interface components
@@ -43,7 +48,13 @@ def main():
     language = st.radio("Select language to output:", ('English', 'Spanish', 'Korean'))
 
     # AI API Selection
-    api_choice = st.radio("Select AI API:", ('Anthropic', 'OpenAI', 'Gemini'))
+    api_choice = st.radio("Select AI API:", ('Gemini','Anthropic', 'OpenAI'))
+
+    # summarize way selection
+    summarize_way = st.radio("Select summarize way:", ('Chapters', 'Detailed','syukaworld')) 
+
+    # detailed way write the chapters
+    detailed_way = st.text_area("Write the chapters manually")
 
     if st.button("Summarize"):
         if url:
@@ -60,8 +71,13 @@ def main():
             st.image(os.path.join(os.getcwd(), "thumbnail.jpg"), caption='Thumbnail', use_column_width=True) 
             
             # Display Summary
-            transcript = get_transcript_from_url(url)
-            summary = summarize_transcript(transcript, language, title, api_choice)
+            transcript, chapters = get_transcript_from_url(url)
+            # if chapters is not empty, then use the chapters
+            if chapters:
+                summary = summarize_transcript(transcript, language, chapters, title, api_choice, summarize_way)
+            else:
+                print(detailed_way)
+                summary = summarize_transcript(transcript, language, detailed_way, title, api_choice, summarize_way)
             st.subheader("Video Summary:")
             st.write(summary)
         else:
