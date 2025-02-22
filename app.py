@@ -48,7 +48,7 @@ def main():
     language = st.radio("Select language to output:", ('English', 'Spanish', 'Korean'))
 
     # AI API Selection
-    api_choice = st.radio("Select AI API:", ('Gemini','Anthropic', 'OpenAI'))
+    api_choice = st.radio("Select AI API:", ('Gemini','Anthropic', 'OpenAI', 'x.ai'))
 
     # summarize way selection
     summarize_way = st.radio("Select summarize way:", ('Chapters', 'Detailed','syukaworld')) 

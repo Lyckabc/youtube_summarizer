@@ -265,6 +265,11 @@ def summarize_text(
         client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     elif api_choice == 'Gemini':
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    elif api_choice == 'x.ai':  
+        client = openai.OpenAI(
+            api_key=os.getenv("XAI_API_KEY"),
+            base_url="https://api.x.ai/v1"
+        )
     else:
         raise ValueError(f"Invalid API choice: {api_choice}")
 
@@ -332,6 +337,23 @@ def summarize_text(
              'parts': prompt}
         ]
         summary_text = model.generate_content(messages).text
+    
+    # if x.ai API
+    elif api_choice == 'x.ai':
+        response = client.chat.completions.create(
+            model="grok-2-latest",
+            messages=[
+            { 
+                "role": "system",
+                "content": "You are a helpful assistant that summarizes text."
+            },
+            { 
+                "role": "user",
+                "content": prompt
+            }],
+            stream = False
+        )
+        summary_text = response.choices[0].message.content
 
     print(summary_text)
     return summary_text
